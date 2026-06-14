@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{16A46215-C3FC-4F84-966D-22B97CADE8C0}</ProjectGuid>
-    <RootNamespace>Switchy</RootNamespace>
+    <RootNamespace>Switchify</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -90,6 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <AdditionalOptions>/source-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,8 +133,34 @@
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)*.lng" "$(OutDir)"</Command>
+      <Message>Copying localization files (.lng) next to the executable</Message>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="en.lng" />
+    <None Include="ru.lng" />
+  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="layout.c" />
+    <ClCompile Include="tray.c" />
+    <ClCompile Include="log.c" />
+    <ClCompile Include="config.c" />
+    <ClCompile Include="autostart.c" />
+    <ClCompile Include="primary_layout.c" />
+    <ClCompile Include="indicator.c" />
+    <ClCompile Include="i18n.c" />
+    <ClInclude Include="layout.h" />
+    <ClInclude Include="tray.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="autostart.h" />
+    <ClInclude Include="primary_layout.h" />
+    <ClInclude Include="indicator.h" />
+    <ClInclude Include="i18n.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

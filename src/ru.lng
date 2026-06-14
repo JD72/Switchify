@@ -1,0 +1,46 @@
+# Switchify — локализация (русский).
+# Строки на # и пустые игнорируются.
+# \n в значении — перенос строки. Плейсхолдеры %u сохранять как есть.
+
+menu.enable      = Включить
+menu.disable     = Отключить
+menu.log         = Вести лог
+menu.autostart   = Автостарт
+menu.language    = Язык
+menu.primaryMode = Режим основной раскладки
+menu.primary     = Основная раскладка
+menu.timerFmt    = Таймер (%u сек)
+timer.secFmt     = %u сек
+menu.countdown   = Индикатор таймера
+menu.indicator   = Индикатор раскладки
+menu.about       = О программе
+menu.exit        = Выход
+
+ind.enabled   = Включён
+ind.color     = Цвет
+ind.custom    = Другой…
+ind.thickness = Толщина
+ind.length    = Длина
+ind.edge      = Край
+ind.align     = Выравнивание
+
+color.orange  = Оранжевый
+color.red     = Красный
+color.yellow  = Жёлтый
+color.green   = Зелёный
+color.blue    = Голубой
+color.magenta = Пурпурный
+
+edge.top    = Сверху
+edge.bottom = Снизу
+edge.left   = Слева
+edge.right  = Справа
+
+align.start  = К началу
+align.center = По центру
+align.end    = К концу
+
+about.title     = О программе
+about.body      = Switchify\nПереключение раскладки клавиатуры по CapsLock.\nФорк Switchy от erryox.\nGitHub: <A HREF="https://github.com/JD72/Switchify">https://github.com/JD72/Switchify</A>\n\nКомбинации:\n  CapsLock          — сменить раскладку\n  Shift+CapsLock    — переключить Caps Lock\n  Двойной клик      — сменить раскладку
+dlg.title       = Switchify
+log.restartBody = Изменение лога вступит в силу после перезапуска Switchify.\n\nПерезапустить сейчас?

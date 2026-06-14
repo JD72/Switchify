@@ -1,0 +1,46 @@
+# Switchify localization — English.
+# Lines starting with # and blank lines are ignored.
+# \n in a value becomes a line break. Keep %u placeholders intact.
+
+menu.enable      = Enable
+menu.disable     = Disable
+menu.log         = Logging
+menu.autostart   = Run at startup
+menu.language    = Language
+menu.primaryMode = Primary layout mode
+menu.primary     = Primary layout
+menu.timerFmt    = Timer (%u sec)
+timer.secFmt     = %u sec
+menu.countdown   = Countdown indicator
+menu.indicator   = Layout indicator
+menu.about       = About
+menu.exit        = Exit
+
+ind.enabled   = Enabled
+ind.color     = Color
+ind.custom    = Custom…
+ind.thickness = Thickness
+ind.length    = Length
+ind.edge      = Edge
+ind.align     = Alignment
+
+color.orange  = Orange
+color.red     = Red
+color.yellow  = Yellow
+color.green   = Green
+color.blue    = Blue
+color.magenta = Magenta
+
+edge.top    = Top
+edge.bottom = Bottom
+edge.left   = Left
+edge.right  = Right
+
+align.start  = Start
+align.center = Center
+align.end    = End
+
+about.title     = About
+about.body      = Switchify\nSwitches the keyboard layout with CapsLock.\nFork of Switchy by erryox.\nGitHub: <A HREF="https://github.com/JD72/Switchify">https://github.com/JD72/Switchify</A>\n\nShortcuts:\n  CapsLock          — switch layout\n  Shift+CapsLock    — toggle Caps Lock\n  Double click      — switch layout
+dlg.title       = Switchify
+log.restartBody = Logging changes take effect after restarting Switchify.\n\nRestart now?

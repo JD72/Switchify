@@ -42,5 +42,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4.3.0
       with:
-        name: Switchy.exe
-        path: x64/Release/Switchy.exe
+        name: Switchify.exe
+        path: x64/Release/Switchify.exe
