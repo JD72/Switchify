@@ -30,6 +30,7 @@ color.yellow  = Жёлтый
 color.green   = Зелёный
 color.blue    = Голубой
 color.magenta = Пурпурный
+color.rainbow = Радуга
 
 edge.top    = Сверху
 edge.bottom = Снизу

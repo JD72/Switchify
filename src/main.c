@@ -47,6 +47,7 @@ BOOL winPressed = FALSE;
 #define LAYOUT_POLL_MS   120
 #define INDICATOR_PREVIEW_TIMER_ID 3
 #define INDICATOR_PREVIEW_MS       1500
+#define INDICATOR_RAINBOW_PREVIEW_MS 3000
 
 HWND hAppWindow = NULL;
 
@@ -307,7 +308,8 @@ static void ApplyIndicatorAppearanceChange(void)
 {
 	Indicator_RefreshAppearance();
 	Indicator_PreviewShow();
-	SetTimer(hAppWindow, INDICATOR_PREVIEW_TIMER_ID, INDICATOR_PREVIEW_MS, NULL);
+	UINT ms = Config_GetIndicatorRainbow(FALSE) ? INDICATOR_RAINBOW_PREVIEW_MS : INDICATOR_PREVIEW_MS;
+	SetTimer(hAppWindow, INDICATOR_PREVIEW_TIMER_ID, ms, NULL);
 }
 
 static HRESULT CALLBACK AboutTaskDlgCallback(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam, LONG_PTR refData)
@@ -337,6 +339,10 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		{
 			KillTimer(hWnd, INDICATOR_PREVIEW_TIMER_ID);
 			Indicator_OnLayoutChanged(Layout_Current());
+		}
+		else if (wParam == RAINBOW_TIMER_ID)
+		{
+			Indicator_OnRainbowTick();
 		}
 		return 0;
 	case TRAY_CALLBACK_MSG:
@@ -404,6 +410,10 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case IDM_COUNTDOWN:
 			Config_SetCountdownEnabled(!Config_GetCountdownEnabled(FALSE));
 			return 0;
+		case IDM_IND_COLOR_RAINBOW:
+			Config_SetIndicatorRainbow(!Config_GetIndicatorRainbow(FALSE));
+			ApplyIndicatorAppearanceChange();
+			return 0;
 		case IDM_IND_COLOR_CUSTOM:
 		{
 			static COLORREF customColors[16] = { 0 };
@@ -416,6 +426,7 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			cc.Flags = CC_RGBINIT | CC_FULLOPEN;
 			if (ChooseColorW(&cc))
 			{
+				Config_SetIndicatorRainbow(FALSE);
 				Config_SetIndicatorColor(cc.rgbResult);
 				ApplyIndicatorAppearanceChange();
 			}
@@ -444,6 +455,7 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			else if (LOWORD(wParam) >= IDM_IND_COLOR_BASE &&
 				LOWORD(wParam) < IDM_IND_COLOR_BASE + IND_COLOR_PRESET_COUNT)
 			{
+				Config_SetIndicatorRainbow(FALSE);
 				Config_SetIndicatorColor(Tray_GetIndicatorColorPreset(LOWORD(wParam) - IDM_IND_COLOR_BASE));
 				ApplyIndicatorAppearanceChange();
 			}
@@ -462,8 +474,14 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			else if (LOWORD(wParam) >= IDM_IND_EDGE_BASE &&
 				LOWORD(wParam) < IDM_IND_EDGE_BASE + 4)
 			{
-				Config_SetIndicatorEdge((IndicatorEdge)(LOWORD(wParam) - IDM_IND_EDGE_BASE));
-				ApplyIndicatorAppearanceChange();
+				UINT bit  = 1u << (LOWORD(wParam) - IDM_IND_EDGE_BASE);
+				UINT mask = Config_GetIndicatorEdgeMask(IND_DEF_EDGE_MASK);
+				UINT next = mask ^ bit;
+				if (next != 0)
+				{
+					Config_SetIndicatorEdgeMask(next);
+					ApplyIndicatorAppearanceChange();
+				}
 			}
 			else if (LOWORD(wParam) >= IDM_IND_ALIGN_BASE &&
 				LOWORD(wParam) < IDM_IND_ALIGN_BASE + 3)
@@ -486,6 +504,7 @@ LRESULT CALLBACK AppWindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		KillTimer(hWnd, LAYOUT_TIMER_ID);
 		KillTimer(hWnd, PRIMARY_TIMER_ID);
 		KillTimer(hWnd, INDICATOR_PREVIEW_TIMER_ID);
+		KillTimer(hWnd, RAINBOW_TIMER_ID);
 		Indicator_Shutdown();
 		Log_Shutdown();
 		PostQuitMessage(0);
@@ -524,7 +543,7 @@ BOOL CreateAppWindow(void)
 	}
 	Tray_SetLanguage(Layout_Current());
 	PrimaryMode_Init(hAppWindow);
-	Indicator_Init();
+	Indicator_Init(hAppWindow);
 	Log_Write(LOG_INFO, "Switchify started");
 
 	return TRUE;

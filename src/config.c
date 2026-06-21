@@ -87,6 +87,20 @@ void Config_SetIndicatorEnabled(BOOL value)
 	WritePrivateProfileStringA("Indicator", "Enabled", value ? "1" : "0", g_iniPath);
 }
 
+BOOL Config_GetIndicatorRainbow(BOOL fallback)
+{
+	char buf[8] = { 0 };
+	GetPrivateProfileStringA("Indicator", "Rainbow", "", buf, sizeof(buf), g_iniPath);
+	if (strcmp(buf, "0") == 0) return FALSE;
+	if (strcmp(buf, "1") == 0) return TRUE;
+	return fallback;
+}
+
+void Config_SetIndicatorRainbow(BOOL value)
+{
+	WritePrivateProfileStringA("Indicator", "Rainbow", value ? "1" : "0", g_iniPath);
+}
+
 COLORREF Config_GetIndicatorColor(COLORREF fallback)
 {
 	char buf[16] = { 0 };
@@ -120,15 +134,22 @@ UINT Config_GetIndicatorLength(UINT fallback)
 	return (UINT)v;
 }
 
-IndicatorEdge Config_GetIndicatorEdge(IndicatorEdge fallback)
+UINT Config_GetIndicatorEdgeMask(UINT fallback)
 {
-	char buf[16] = { 0 };
+	char buf[64] = { 0 };
 	GetPrivateProfileStringA("Indicator", "Edge", "", buf, sizeof(buf), g_iniPath);
-	if (_stricmp(buf, "top") == 0)    return IND_EDGE_TOP;
-	if (_stricmp(buf, "bottom") == 0) return IND_EDGE_BOTTOM;
-	if (_stricmp(buf, "left") == 0)   return IND_EDGE_LEFT;
-	if (_stricmp(buf, "right") == 0)  return IND_EDGE_RIGHT;
-	return fallback;
+	UINT mask = 0;
+	char* ctx = NULL;
+	char* tok = strtok_s(buf, ", \t", &ctx);
+	while (tok)
+	{
+		if      (_stricmp(tok, "top") == 0)    mask |= 1u << IND_EDGE_TOP;
+		else if (_stricmp(tok, "bottom") == 0) mask |= 1u << IND_EDGE_BOTTOM;
+		else if (_stricmp(tok, "left") == 0)   mask |= 1u << IND_EDGE_LEFT;
+		else if (_stricmp(tok, "right") == 0)  mask |= 1u << IND_EDGE_RIGHT;
+		tok = strtok_s(NULL, ", \t", &ctx);
+	}
+	return mask ? mask : fallback;
 }
 
 IndicatorAlign Config_GetIndicatorAlign(IndicatorAlign fallback)
@@ -159,6 +180,8 @@ void Config_EnsureIndicatorAppearance(void)
 	if (buf[0] == '\0') { sprintf_s(val, sizeof(val), "%u", IND_DEF_LENGTH); WritePrivateProfileStringA("Indicator", "Length", val, g_iniPath); }
 	buf[0] = '\0'; GetPrivateProfileStringA("Indicator", "Align", "", buf, sizeof(buf), g_iniPath);
 	if (buf[0] == '\0') WritePrivateProfileStringA("Indicator", "Align", "center", g_iniPath);
+	buf[0] = '\0'; GetPrivateProfileStringA("Indicator", "Rainbow", "", buf, sizeof(buf), g_iniPath);
+	if (buf[0] == '\0') WritePrivateProfileStringA("Indicator", "Rainbow", "0", g_iniPath);
 }
 
 void Config_SetIndicatorColor(COLORREF color)
@@ -183,17 +206,15 @@ void Config_SetIndicatorLength(UINT pct)
 	WritePrivateProfileStringA("Indicator", "Length", buf, g_iniPath);
 }
 
-void Config_SetIndicatorEdge(IndicatorEdge edge)
+void Config_SetIndicatorEdgeMask(UINT mask)
 {
-	const char* s = "bottom";
-	switch (edge)
-	{
-	case IND_EDGE_TOP:    s = "top";    break;
-	case IND_EDGE_BOTTOM: s = "bottom"; break;
-	case IND_EDGE_LEFT:   s = "left";   break;
-	case IND_EDGE_RIGHT:  s = "right";  break;
-	}
-	WritePrivateProfileStringA("Indicator", "Edge", s, g_iniPath);
+	char buf[64] = { 0 };
+	if (mask & (1u << IND_EDGE_TOP))    strncat_s(buf, sizeof(buf), buf[0] ? ",top" : "top", _TRUNCATE);
+	if (mask & (1u << IND_EDGE_BOTTOM)) strncat_s(buf, sizeof(buf), buf[0] ? ",bottom" : "bottom", _TRUNCATE);
+	if (mask & (1u << IND_EDGE_LEFT))   strncat_s(buf, sizeof(buf), buf[0] ? ",left" : "left", _TRUNCATE);
+	if (mask & (1u << IND_EDGE_RIGHT))  strncat_s(buf, sizeof(buf), buf[0] ? ",right" : "right", _TRUNCATE);
+	if (!buf[0]) strncpy_s(buf, sizeof(buf), "bottom", _TRUNCATE);
+	WritePrivateProfileStringA("Indicator", "Edge", buf, g_iniPath);
 }
 
 void Config_SetIndicatorAlign(IndicatorAlign align)

@@ -30,6 +30,7 @@ color.yellow  = Yellow
 color.green   = Green
 color.blue    = Blue
 color.magenta = Magenta
+color.rainbow = Rainbow
 
 edge.top    = Top
 edge.bottom = Bottom

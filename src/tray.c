@@ -209,15 +209,17 @@ static HMENU BuildIndicatorSubmenu(BOOL on)
 	UINT grayIfOff = on ? 0 : MF_GRAYED;
 
 	HMENU colorMenu = CreatePopupMenu();
+	BOOL rainbowOn = Config_GetIndicatorRainbow(FALSE);
 	COLORREF curColor = Config_GetIndicatorColor(
 		RGB((IND_DEF_COLOR >> 16) & 0xFF, (IND_DEF_COLOR >> 8) & 0xFF, IND_DEF_COLOR & 0xFF));
 	for (int i = 0; i < IND_COLOR_PRESET_COUNT; i++)
 	{
-		UINT f = MF_STRING | ((g_indColorPresets[i] == curColor) ? MF_CHECKED : 0);
+		UINT f = MF_STRING | ((!rainbowOn && g_indColorPresets[i] == curColor) ? MF_CHECKED : 0);
 		AppendMenuW(colorMenu, f, IDM_IND_COLOR_BASE + i, I18n_Get(g_indColorStr[i]));
 	}
 	AppendMenuW(colorMenu, MF_SEPARATOR, 0, NULL);
 	AppendMenuW(colorMenu, MF_STRING, IDM_IND_COLOR_CUSTOM, I18n_Get(STR_IND_CUSTOM));
+	AppendMenuW(colorMenu, MF_STRING | (rainbowOn ? MF_CHECKED : 0), IDM_IND_COLOR_RAINBOW, I18n_Get(STR_COLOR_RAINBOW));
 	AppendMenuW(root, MF_POPUP | grayIfOff, (UINT_PTR)colorMenu, I18n_Get(STR_IND_COLOR));
 
 	HMENU thickMenu = CreatePopupMenu();
@@ -243,10 +245,10 @@ static HMENU BuildIndicatorSubmenu(BOOL on)
 	AppendMenuW(root, MF_POPUP | grayIfOff, (UINT_PTR)lenMenu, I18n_Get(STR_IND_LENGTH));
 
 	HMENU edgeMenu = CreatePopupMenu();
-	IndicatorEdge curEdge = Config_GetIndicatorEdge(IND_DEF_EDGE);
+	UINT edgeMask = Config_GetIndicatorEdgeMask(IND_DEF_EDGE_MASK);
 	for (int i = 0; i < 4; i++)
 	{
-		UINT f = MF_STRING | (((IndicatorEdge)i == curEdge) ? MF_CHECKED : 0);
+		UINT f = MF_STRING | ((edgeMask & (1u << i)) ? MF_CHECKED : 0);
 		AppendMenuW(edgeMenu, f, IDM_IND_EDGE_BASE + i, I18n_Get(g_indEdgeStr[i]));
 	}
 	AppendMenuW(root, MF_POPUP | grayIfOff, (UINT_PTR)edgeMenu, I18n_Get(STR_IND_EDGE));

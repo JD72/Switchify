@@ -10,7 +10,7 @@ A tiny, portable Windows utility written in plain C (Win32 API, no external depe
 
 - **Caps Lock** switches the keyboard layout; **Shift+Caps Lock** still toggles the real Caps Lock state.
 - **Tray icon** showing the current layout as a two-letter language code. Double-click it to switch the layout.
-- **On-screen layout indicator** — a thin colored overlay bar that appears whenever the active layout isn't your primary one. Color, thickness, edge, length, and alignment are all configurable from the tray menu.
+- **On-screen layout indicator** — a thin colored overlay bar that appears whenever the active layout isn't your primary one. Configurable from the tray menu: color (fixed presets, a custom color, or a **Rainbow** mode that auto-cycles high-contrast colors to catch your eye), thickness, length, alignment, and which **screen edge(s)** it shows on — pick several to display the bar on multiple edges at once.
 - **Primary layout mode** — automatically returns to your primary layout after a configurable idle timeout.
 - **Countdown indicator** — the overlay bar shrinks as the auto-return timer counts down.
 - **Multilingual interface** (English / Russian), switchable from the tray menu.
